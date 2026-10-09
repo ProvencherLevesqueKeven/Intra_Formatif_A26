@@ -2,6 +2,7 @@
 
 namespace Dessins.Events
 {
+    [JsonDerivedType(typeof(ChangeColor))]
     [JsonDerivedType(typeof(DrawCircle))]
     [JsonDerivedType(typeof(DrawStar))]
     [JsonDerivedType(typeof(DrawSquare))]
@@ -10,6 +11,6 @@ namespace Dessins.Events
     {
         public abstract string Type { get; }
 
-        public List<DrawingEvent>? DrawingEvents { get; set; } = null;
+        public List<DrawingEvent>? DrawingEvents { get; set; } = [];
     }
 }

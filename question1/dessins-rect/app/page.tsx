@@ -9,7 +9,7 @@ import { createSquare, createCircle, createStar } from '@/lib/utils';
 export default function Home() {
   const [shapes, setShapes] = useState<any[]>([]);
   const currentColor = useRef("blue");
-
+  const link = "http://localhost:5269/api/Dessins/GetDrawing";
   // Seulement un exemple local pour comprendre comment dessiner des formes avec un délai
   async function afficherTestLocal(){
     clearShapes();
@@ -26,16 +26,52 @@ export default function Home() {
 
   async function afficherEvents1(){
     clearShapes();
+    var result = await axios.get(link + "1");
     // TODO: Il faut appeler le serveur pour obtenir l'event retourné
+    console.log(result);
+    await applyEvents(result.data);
   }
 
   async function afficherEvents2(){
     clearShapes();
+    const test = [1,2,3];
+    var result = await axios.get(link + "2");
     // TODO: Il faut appeler le serveur pour obtenir la séquence d'événements 2 (que vous devez créer sur le serveur)
+     applyEvents(result.data);
   }
 
   async function applyEvents(event:any){
     // TODO: Il faut traiter les événements reçus du serveur et dessiner les formes correspondantes
+    switch(event.type)
+    {
+      case"Circle":{
+          drawCircle(event.x, event.y)
+        break;
+      }
+      case"Square":{
+        drawSquare(event.x, event.y)
+        break;
+      }
+      case"Star":{
+          drawStar(event.x, event.y, event.innerRadius)
+        break;
+      }
+      case"Wait":{
+        await wait(event.secondes)
+        break;
+      }
+      case"ChangeColor":{
+        currentColor.current = event.color
+        break;
+      }
+    }
+    if(event.drawingEvents)
+    {
+      for(let e of event.drawingEvents)
+      {
+        await applyEvents(e);
+      }
+    }
   }
 
   // ATTENTION: Les méthodes suivantes n'ont pas besoin d'être modifiées pour répondre à la question
